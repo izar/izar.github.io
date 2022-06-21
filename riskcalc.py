@@ -44,7 +44,7 @@ def add_question(target_list=0, *args, **kws):
         vector = "".join([str(q["state"]) for q in questions])
         vector_d = int(f"0b{vector}", base=2)
         out_content = Element("vector").select("p")
-        out_content.element.innerText = f"SQSPRiskV0.1:{vector_d}"
+        out_content.element.innerText = f"LalalaRiskV0.1:{vector_d}"
         
         # can't have q1 be true AND q>1 also be true at the same time
         if vector_d > 2**(len(questions)-1):
