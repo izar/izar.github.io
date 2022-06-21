@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Risk Calculator</title>
+<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+<script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+</head>
+<body>
+<py-script src="./riskcalc.py" output="riskcalc">
+     
+</py-script>
+    <div class="jumbotron jumbotron-fluid" id="riskcalc">
+        <h2 class=""display-4">Risk Calculator v0.1</h2>
+        <p class=""lead">Click on the checkbox if the answer is YES, leave blank if NO.</p>
+        <hr>
+        <section>
+            <div id="list-container-0"> </div>
+                <p class="lead">OR</p>
+            <div id="list-container-1"></div>
+            <div id="vector"><p></p></div>
+            <div id="error"><p></p></div>
+    </div>
+    <template id="question-template">
+        <section class="question">
+            <label>
+                <p class="m-0 inline"></p>
+                <input class="mr-2" type="checkbox">
+            </label>
+        </section>
+    </template>
+</section>
+</body>
+</html>
