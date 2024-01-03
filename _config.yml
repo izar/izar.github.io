@@ -1,6 +1,7 @@
 theme: jekyll-theme-minimal
 title: "Threat Modeling: A  Practical Guide for Development Teams"
 description: A book by Izar Tarandach and Matthew J. Coles
+tagline: A site dedicated to all things threat modeling
 logo: cover.jpg
 # tag: "...mandatory reading for anyone involved in systems development..." - Alyssa "Threat Modeling: A  Practical Guide for Development Teams"
 url: https://threatmodeling.dev
