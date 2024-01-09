@@ -16,3 +16,13 @@ social:
 plugins:
     - jekyll-feed
     - jekyll-seo-tag
+    - jekyll-paginate
+    - jekyll-sitemap
+
+permalink: /:title/
+markdown: kramdown
+paginate: 5
+paginate_path: "/:num"
+date_format: "%b %-d, %Y"
+google_analytics: G-BHJ67XNH3X
+

@@ -1,4 +1,5 @@
 ---
+layout: default
 ---
 
 {% seo %}
@@ -23,15 +24,6 @@ We also have some of our ongoing writings here:
 
 {% endif %}
 
-
-
-<script src="https://utteranc.es/client.js"
-        repo="izar/devenabled-tm"
-        issue-term="pathname"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
 
 Available at <a href="https://www.amazon.com/Threat-Modeling-Identification-Avoidance-Secure/dp/1492056553/ref=sr_1_1?dchild=1&keywords=tarandach&qid=1605115844&sr=8-1">Amazon</a>, <a href="https://www.barnesandnoble.com/w/threat-modeling-izar-tarandach/1137728005?ean=9781492056553">Barnes&Noble</a> and other book sellers.
 
