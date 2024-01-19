@@ -22,7 +22,7 @@ plugins:
 permalink: /:title/
 markdown: kramdown
 date_format: "%b %-d, %Y"
-google_analytics: G-BHJ67XNH3X
+google_analytics: GT-TX5Q2HN
 github:
     is_project_page: false
     is_user_page: false
