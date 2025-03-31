@@ -18,8 +18,10 @@ If so, <a href="https://www.amazon.com/Threat-Modeling-Identification-Avoidance-
   * https://github.com/hysnsec/awesome-threat-modelling
 * The #threat-modeling channel at the [OWASP Slack](https://owasp.org/slack/invite)
 * [ThreatModelingConnect](https://www.threatmodelingconnect.com), the community for threat modeling!
-* https://github.com/izar/pytm
+* https://github.com/OWASP/pytm
 * https://github.com/izar/continuous-threat-modeling
+* https://shostack.org/blog
+* https://www.toreon.com/tmi-threat-modeling/
 
 {% if site.posts.size != 0 %}
 
