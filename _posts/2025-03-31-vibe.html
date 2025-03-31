@@ -1,0 +1,134 @@
+---
+layout: post
+title: Vibe Threat Modeling. No, really.
+author: Izar Tarandach
+---
+
+March 25, 2025
+
+
+This morning, as I went through the self-imposed masochistic ritual of gym time (you thought I was going to say 'stand-up', right ? You did. You know you did. It's OK.), a question flashed through my mind in between 250 ounce lifts:
+
+"How come no TM bro (or sis. Is that a thing? Please tell me it is not a thing) has claimed "vibe threat modeling" yet?
+
+So here I am, claiming it. Because I can. Or not, don't care. I am staking my flag on it. If for anything, to make sure it is dead and stays dead. But with a good reason.
+
+We have been doing it all along.
+
+Sure, we haven't been using Artificial Intelligence. Myself, I've been using Human Ignorance most of the time, but I do know most people out there are using all the forms of intelligence available to them. Including Threat Intel, of course.
+
+But here's the thing - besides being the corporate acceptable version of "I told you so", Threat Modeling is, inherently, an exercise in communication and creativity. Talking to an artificial assistant (a purposeful choice of words) today is, at best, a great exercise in memory refreshment: it knows what the security collective knows, and you should know a great percentage of it as well. You should not hold yourself to knowing or remembering all of it, but you should definitely not be surprised by what it can come up with.
+
+So you talk to people. People who wrote the code, who designed the system, who managed the product, who tested it. Or who will, if you're lucky to get in at the best time. You throw ideas at each other and you discuss them, you get mad because you don't understand each other, you get a great feeling when you do, you find things you need to study more so you can actually secure properly. It is definitely a "vibe" thing. If you're lucky, you've been there. If you're even luckier, you'll get there. 
+
+The point I am trying to make is that expecting a GPT to come up with something creative that you wouldn't eventually be able to come up with yourself is, well, at this point in time, probably wishful thinking. It knows what we all know, but it can't imagine what none of us has imagined. So vibe threat modeling with it is, well, not very vibey.
+
+But sometimes we are lone security practitioners in the depths of a 10-person start-up that's moving too fast for its own good and is very clumsy and who left the coffee pot on the counter and yes Carl i am looking at you, damn Carl, stop moving fast and breaking things. In those cases, you may think you are all by yourself in threat modeling land. 
+
+Of course, young padawan, you're wrong. It comes with the territory. Talk to your developers, you must. But that may be difficult, specially when they've been vibe coding the whole day and if you ask them "how does this work" you're met with blank stares and a run for the nearest taco truck. But you should nevertheless talk to them. 
+
+And the Ancients forbid you're the one doing the vibe coding, and your whole venture is you and yourself in 15 minute Pomodoro stretches developing the next ICQ. Then you definitely got nobody to talk to. (But if you need, I got a public calendar. Talk to me. I accept shares and tacos. ) 
+
+In those cases, you need a pal you can rely on to ask those hard questions. As part of my claim, I give you <a src="https://chatgpt.com/g/g-67e2aa48663c81919836ec0ce9bef2fd-vibe-threat-modeling-by-gpt">"Vibe Threat Modeling by GPT"</a>. Offer it a description or a diagram of your system. It will start asking you "what if" questions and wait for you to mitigate the threats identified. See bellow. I even tried to trip it with IPSEC rather than HTTPS. And it will answer you in the same vein as you address it - I was channeling my best Bill & Ted.
+
+So here you go, my answer to vibe coding in threat modeling land. Have fun, and may your threats be ever mitigated:
+
+
+
+<figure><img alt="" src="/assets/img/simple.png" /></figure>
+
+
+
+Here is a diagram of my system.
+
+ChatGPT said:
+Great, thanks for sharing the diagram. Here's what I see so far:
+
+The system is composed of a web server and a database server.
+These are separated logically into a "Web Side" and a "DB Side."
+The web server communicates with the database server over HTTP, as noted by the arrow and label.
+The communication is labeled as (1) web and db, which may suggest it's a key integration point.
+
+Let’s start exploring potential threats.
+
+What if #1:
+What if an attacker intercepts or tampers with HTTP traffic between the web server and the database server?
+
+Since HTTP is not encrypted, sensitive data or credentials sent between the web and database server could be exposed or altered in transit—especially if these components are on different machines or subnets.
+
+How would you mitigate this risk?
+
+You said:
+Well i would probably go and encrypt the channel, bro. Using IPSEC for sure.
+
+ChatGPT said:
+Solid move, bro 😎 — using IPSec to encrypt traffic between the web server and the database server is a strong mitigation. It ensures:
+
+Confidentiality: attackers can’t eavesdrop.
+Integrity: tampering attempts get caught.
+Authentication: only authorized peers can connect.
+
+I'll lock that one in. Here's the record:
+
+What if #1: What if an attacker intercepts or tampers with HTTP traffic between the web server and the database server? Mitigation: Encrypt the channel using IPSec to ensure confidentiality and integrity.
+Ready for the next one?
+
+What if #2:
+What if the web server is compromised and starts issuing malicious or excessive queries to the database server?
+
+This could happen through RCE, SSRF, or app-level vulnerabilities. Since the web server has direct access to the DB, it could extract or corrupt data at scale.
+
+How would you mitigate this one?
+
+You said:
+Dude, I totally get where you are going to. I would certainly and most bodaciously add a query limit, potentially with a warning after a soft threshold and a stop after a hard one.
+
+ChatGPT said:
+Bodacious indeed 🤙🏼
+
+Adding a query rate limit with soft and hard thresholds is a righteous way to detect and respond to abuse coming from the web server—even if it's compromised. This kind of control:
+
+Detects abnormal query behavior early.
+Allows monitoring and alerting before hitting critical impact.
+Cuts off abusive connections automatically after a hard limit.
+
+Logging and alerting on soft limits is especially slick for catching slow-burn attacks.
+
+Locked in:
+
+What if #2: What if the web server is compromised and starts issuing malicious or excessive queries to the database server? Mitigation: Implement query limits with a soft threshold for alerts and a hard threshold to block excessive behavior.
+Here comes the next one 🚨
+
+What if #3:
+What if the database server is tricked into executing dangerous queries due to SQL injection from the web server?
+
+Even if the DB is locked down, a poorly sanitized query passed by the web server could lead to data leakage, modification, or even command execution (if stored procs or certain DB functions are in play).
+
+How would you reduce this risk?
+
+You said:
+ORM, man. ORM. That's the only way to go. I would make sure that all apps connecting to my delicious web server do so only with an ORM. But I am not quite sure how I'd go about enforcing that one. Any ideas ?
+
+ChatGPT said:
+Ahhh yes, the ORM gospel—truly the path of the righteous 😌
+
+Using an Object-Relational Mapper (ORM) can totally neutralize a whole class of SQL injection attacks by abstracting and sanitizing query construction. BUT you’re right—enforcing ORM use is the real boss fight here.
+
+Here are a few approaches to help enforce or encourage that vibe:
+
+🍱 App-layer controls:
+Code reviews or CI checks: Automatically scan source code for raw SQL patterns (execute, raw_query, etc.) in PRs.
+Pre-commit hooks: Warn devs locally if they're about to commit dangerous patterns.
+
+🕵️ Runtime controls:
+DB proxy/wrapper: Intercept queries to detect and log raw SQL signatures. Some proxies can even block non-whitelisted patterns.
+Logging and alerting on query structure: Many ORMs produce consistent query formats—if something deviates, raise a flag.
+
+🧑🏫 Policy + training:
+Establish a coding standard: "ORM use is mandatory."
+Educate devs on why—show them the horrors of raw SQL.
+
+How’s that sound? Wanna go with one of these to round out the mitigation, or keep it high level and just say “use ORM + monitor for raw SQL”?
+
+
+
