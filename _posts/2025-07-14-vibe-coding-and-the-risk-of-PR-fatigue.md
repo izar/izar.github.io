@@ -4,7 +4,11 @@ title: Vibe Coding an the rise of PR-Fatigue
 author: Izar Tarandach
 ---
 
+<figure><img alt="" src="/assets/img/merge.png" /></figure>
+
 July 14, 2025
+
+(disclaimer: AI was used to review and improve this article, as well as some helpful humans. AI also drew the banner, because I don't know any humans willing to do that for my writings.)
 
 **Vibe Coding and the rise of PR-Fatigue**
 
