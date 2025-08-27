@@ -1,6 +1,6 @@
 ---
 layout: post
-title: CTM and LLMs: Hitting the Wall (In a Good Way)
+title: CTM and LLMs - Hitting the Wall (In a Good Way)
 author: Izar Tarandach
 ---
 
