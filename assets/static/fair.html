@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAIR Risk Model Calculator</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Inter font for a clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for input number spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <!-- Header Section -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">FAIR Risk Model Calculator</h1>
+            <p class="mt-2 text-gray-600">Quantify your information security risks using the Factor Analysis of Information Risk (FAIR) model.</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+
+            <div id="risk-scenarios-container">
+                <!-- Initial Risk Scenario -->
+                <div class="risk-scenario border border-gray-200 rounded-lg p-6 mb-6" data-scenario-id="1">
+                    <div class="flex justify-between items-start">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Risk Scenario 1</h2>
+                        <!-- Remove button will be added by JS for subsequent scenarios -->
+                    </div>
+                    
+                    <!-- Scenario Name -->
+                    <div>
+                        <label for="scenario-name-1" class="block text-sm font-medium text-gray-700">Scenario Name (Optional)</label>
+                        <input type="text" id="scenario-name-1" class="scenario-name mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 'Phishing Attack on Finance Dept.'">
+                    </div>
+                    
+                    <hr class="my-6 border-gray-200">
+
+                    <!-- Loss Event Frequency (LEF) Section -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-indigo-700">Loss Event Frequency (LEF)</h3>
+                        <p class="text-sm text-gray-600 mt-1">This section determines how often a loss event is expected to occur. It is calculated from Threat Event Frequency and Vulnerability.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label for="tef-1" class="block text-sm font-medium text-gray-700">Threat Event Frequency (TEF)</label>
+                                <p class="text-xs text-gray-500 mb-1">How many times per year a threat is expected to act.</p>
+                                <input type="number" id="tef-1" class="tef-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 10">
+                            </div>
+                            <div>
+                                <label for="vuln-1" class="block text-sm font-medium text-gray-700">Vulnerability (Vuln) %</label>
+                                <p class="text-xs text-gray-500 mb-1">The probability a threat event becomes a loss event.</p>
+                                <input type="number" id="vuln-1" class="vuln-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 20" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loss Magnitude (LM) Section -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-indigo-700">Loss Magnitude (LM)</h3>
+                        <p class="text-sm text-gray-600 mt-1">This section determines the probable financial loss when a loss event occurs. It's the sum of Primary and Secondary losses.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Primary Loss Range ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Direct costs from the event (e.g., hardware replacement).</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" class="primary-loss-low-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Low">
+                                    <span class="text-gray-500">-</span>
+                                    <input type="number" class="primary-loss-high-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="High">
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700">Secondary Loss Range ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Indirect costs (e.g., reputational damage, fines).</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" class="secondary-loss-low-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Low">
+                                    <span class="text-gray-500">-</span>
+                                    <input type="number" class="secondary-loss-high-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="High">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-6 border-gray-200">
+
+                    <!-- Mitigating Controls Section -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700">Mitigating Controls</h3>
+                        <p class="text-sm text-gray-600 mt-1">Enter the annualized cost of controls and their effectiveness in reducing vulnerability.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label for="control-cost-1" class="block text-sm font-medium text-gray-700">Mitigating Control Cost ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Annualized cost of the control.</p>
+                                <input type="number" id="control-cost-1" class="control-cost-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="e.g., 10000">
+                            </div>
+                            <div>
+                                <label for="control-effectiveness-1" class="block text-sm font-medium text-gray-700">Control Effectiveness (%)</label>
+                                <p class="text-xs text-gray-500 mb-1">The percentage vulnerability is reduced by.</p>
+                                <input type="number" id="control-effectiveness-1" class="control-effectiveness-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="e.g., 50" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
+                <button id="add-scenario-btn" class="w-full md:w-auto px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition duration-150 ease-in-out">
+                    + Add Another Risk Scenario
+                </button>
+                <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                    <button id="calculate-rosi-btn" class="w-full md:w-auto px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out shadow-sm">
+                        ROSI Only
+                    </button>
+                    <button id="calculate-btn" class="w-full md:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out shadow-sm">
+                        Risk Only
+                    </button>
+                    <button id="calculate-all-btn" class="w-full md:w-auto px-6 py-3 bg-purple-600 text-white font-bold rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out shadow-sm">
+                        Calculate All
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="results-container" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                 <h2 class="text-2xl font-bold text-gray-900 mb-4">FAIR Risk Analysis</h2>
+                 <div id="individual-results" class="space-y-6 mb-6">
+                    <!-- Individual results will be injected here -->
+                 </div>
+                 <div id="overall-result" class="bg-indigo-50 p-6 rounded-lg">
+                    <!-- Overall result will be injected here -->
+                 </div>
+            </div>
+            
+            <!-- ROSI Results Section -->
+            <div id="rosi-results-container" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Return on Security Investment (ROSI) Analysis</h2>
+                 <p class="text-sm text-gray-600 mb-4">This section calculates the financial viability of the implemented controls by comparing the reduction in risk to the cost of the controls.</p>
+                 <div id="individual-rosi-results" class="space-y-6 mb-6">
+                    <!-- Individual ROSI results will be injected here -->
+                 </div>
+            </div>
+
+
+            <div id="export-buttons-container" class="hidden">
+                 <div class="mt-6 pt-6 border-t border-gray-200 flex flex-col md:flex-row gap-4 justify-end">
+                    <button id="export-md-btn" class="px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                        Export as Markdown
+                    </button>
+                    <button id="export-pdf-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                        Export to PDF
+                    </button>
+                 </div>
+            </div>
+
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center mt-8">
+            <p class="text-sm text-gray-500">FAIR Model Calculator v4.0.1, by Uri.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const { jsPDF } = window.jspdf;
+            const addScenarioBtn = document.getElementById('add-scenario-btn');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const calculateRosiBtn = document.getElementById('calculate-rosi-btn');
+            const calculateAllBtn = document.getElementById('calculate-all-btn');
+            const exportPdfBtn = document.getElementById('export-pdf-btn');
+            const exportMdBtn = document.getElementById('export-md-btn');
+            const scenariosContainer = document.getElementById('risk-scenarios-container');
+            const resultsContainer = document.getElementById('results-container');
+            const rosiResultsContainer = document.getElementById('rosi-results-container');
+            const individualResultsContainer = document.getElementById('individual-results');
+            const individualRosiResultsContainer = document.getElementById('individual-rosi-results');
+            const overallResultContainer = document.getElementById('overall-result');
+            const exportButtonsContainer = document.getElementById('export-buttons-container');
+
+            let scenarioCount = 1;
+            let lastCalculationResults = {};
+
+            // --- Function to format numbers with commas ---
+            const formatNumber = (num, decimals = 2) => {
+                if (isNaN(num) || !isFinite(num)) return '0.00';
+                return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+            };
+            
+            const formatRange = (low, high, prefix = '$') => {
+                 if (prefix === '%') {
+                    if (!isFinite(low) || !isFinite(high)) return "N/A";
+                    return `${formatNumber(low)}% - ${formatNumber(high)}%`;
+                }
+                return `${prefix}${formatNumber(low)} - ${prefix}${formatNumber(high)}`;
+            };
+
+            // --- Function to add a new risk scenario form ---
+            const addScenario = () => {
+                scenarioCount++;
+                const newScenario = document.createElement('div');
+                newScenario.className = 'risk-scenario border border-gray-200 rounded-lg p-6 mb-6 transition-all duration-300 ease-in-out';
+                newScenario.dataset.scenarioId = scenarioCount;
+                
+                newScenario.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Risk Scenario ${scenarioCount}</h2>
+                        <button class="remove-scenario-btn text-sm text-red-500 hover:text-red-700 font-semibold" data-remove-id="${scenarioCount}">Remove</button>
+                    </div>
+                     <div>
+                        <label for="scenario-name-${scenarioCount}" class="block text-sm font-medium text-gray-700">Scenario Name (Optional)</label>
+                        <input type="text" id="scenario-name-${scenarioCount}" class="scenario-name mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 'Server Hardware Failure'">
+                    </div>
+                    <hr class="my-6 border-gray-200">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-indigo-700">Loss Event Frequency (LEF)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label for="tef-${scenarioCount}" class="block text-sm font-medium text-gray-700">Threat Event Frequency (TEF)</label>
+                                <p class="text-xs text-gray-500 mb-1">How many times per year a threat is expected to act.</p>
+                                <input type="number" id="tef-${scenarioCount}" class="tef-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 1">
+                            </div>
+                            <div>
+                                <label for="vuln-${scenarioCount}" class="block text-sm font-medium text-gray-700">Vulnerability (Vuln) %</label>
+                                <p class="text-xs text-gray-500 mb-1">The probability a threat event becomes a loss event.</p>
+                                <input type="number" id="vuln-${scenarioCount}" class="vuln-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 50" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-indigo-700">Loss Magnitude (LM)</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Primary Loss Range ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Direct costs from the event.</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" class="primary-loss-low-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Low">
+                                    <span class="text-gray-500">-</span>
+                                    <input type="number" class="primary-loss-high-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="High">
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700">Secondary Loss Range ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Indirect costs.</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" class="secondary-loss-low-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Low">
+                                    <span class="text-gray-500">-</span>
+                                    <input type="number" class="secondary-loss-high-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="High">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-6 border-gray-200">
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-700">Mitigating Controls</h3>
+                        <p class="text-sm text-gray-600 mt-1">Enter the annualized cost of controls and their effectiveness in reducing vulnerability.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <label for="control-cost-${scenarioCount}" class="block text-sm font-medium text-gray-700">Mitigating Control Cost ($)</label>
+                                <p class="text-xs text-gray-500 mb-1">Annualized cost of the control.</p>
+                                <input type="number" id="control-cost-${scenarioCount}" class="control-cost-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="e.g., 10000">
+                            </div>
+                            <div>
+                                <label for="control-effectiveness-${scenarioCount}" class="block text-sm font-medium text-gray-700">Control Effectiveness (%)</label>
+                                <p class="text-xs text-gray-500 mb-1">The percentage vulnerability is reduced by.</p>
+                                <input type="number" id="control-effectiveness-${scenarioCount}" class="control-effectiveness-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="e.g., 50" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                scenariosContainer.appendChild(newScenario);
+                newScenario.querySelector('.remove-scenario-btn').addEventListener('click', removeScenario);
+            };
+            
+            // --- Function to remove a risk scenario form ---
+            const removeScenario = (event) => {
+                const scenarioId = event.target.dataset.removeId;
+                const scenarioToRemove = document.querySelector(`.risk-scenario[data-scenario-id="${scenarioId}"]`);
+                if (scenarioToRemove) {
+                    scenarioToRemove.classList.add('opacity-0');
+                    setTimeout(() => {
+                        scenarioToRemove.remove();
+                    }, 300);
+                }
+            };
+
+            // --- Universal calculation function ---
+            const getScenarioCalculations = (scenario, index) => {
+                const scenarioName = scenario.querySelector('.scenario-name').value || `Risk Scenario ${index + 1}`;
+                
+                const inputs = {
+                    tef: parseFloat(scenario.querySelector('.tef-input').value) || 0,
+                    vuln: parseFloat(scenario.querySelector('.vuln-input').value) || 0,
+                    primaryLossLow: parseFloat(scenario.querySelector('.primary-loss-low-input').value) || 0,
+                    primaryLossHigh: parseFloat(scenario.querySelector('.primary-loss-high-input').value) || 0,
+                    secondaryLossLow: parseFloat(scenario.querySelector('.secondary-loss-low-input').value) || 0,
+                    secondaryLossHigh: parseFloat(scenario.querySelector('.secondary-loss-high-input').value) || 0,
+                    controlCost: parseFloat(scenario.querySelector('.control-cost-input').value) || 0,
+                    controlEffectiveness: parseFloat(scenario.querySelector('.control-effectiveness-input').value) || 0
+                };
+
+                const lmLow = inputs.primaryLossLow + inputs.secondaryLossLow;
+                const lmHigh = inputs.primaryLossHigh + inputs.secondaryLossHigh;
+
+                // "With Control" (Residual Risk) calculation
+                const effectiveVulnPercent = inputs.vuln * (1 - (inputs.controlEffectiveness / 100));
+                const lef_WithControl = inputs.tef * (effectiveVulnPercent / 100);
+                const residualRiskLow = lef_WithControl * lmLow;
+                const residualRiskHigh = lef_WithControl * lmHigh;
+
+                // "Without Control" (Initial Risk / ALE) calculation
+                const lef_WithoutControl = inputs.tef * (inputs.vuln / 100);
+                const initialRiskLow = lef_WithoutControl * lmLow;
+                const initialRiskHigh = lef_WithoutControl * lmHigh;
+
+                // ROSI calculations
+                const riskReductionLow = initialRiskLow - residualRiskLow;
+                const riskReductionHigh = initialRiskHigh - residualRiskHigh;
+                
+                let rosiLow, rosiHigh;
+                if (inputs.controlCost > 0) {
+                    rosiLow = ((riskReductionLow - inputs.controlCost) / inputs.controlCost) * 100;
+                    rosiHigh = ((riskReductionHigh - inputs.controlCost) / inputs.controlCost) * 100;
+                } else {
+                    rosiLow = Infinity;
+                    rosiHigh = Infinity;
+                }
+                
+                return {
+                    scenarioName, inputs, lmLow, lmHigh,
+                    effectiveVulnPercent, lef: lef_WithControl,
+                    residualRiskLow, residualRiskHigh,
+                    initialRiskLow, initialRiskHigh,
+                    riskReductionLow, riskReductionHigh,
+                    rosiLow, rosiHigh
+                };
+            };
+            
+            // --- UI Rendering Functions ---
+            const renderRiskCard = (resultData) => {
+                 const resultCard = document.createElement('div');
+                 resultCard.className = 'p-4 border border-gray-200 rounded-lg bg-gray-50';
+                 resultCard.innerHTML = `
+                    <h4 class="font-bold text-gray-800 text-lg mb-3">${resultData.scenarioName}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <h5 class="font-semibold text-gray-700 mb-2">Inputs</h5>
+                            <dl class="text-sm space-y-1">
+                                <div class="flex justify-between"><dt class="text-gray-600">TEF:</dt><dd class="font-medium">${resultData.inputs.tef}</dd></div>
+                                <div class="flex justify-between"><dt class="text-gray-600">Vulnerability:</dt><dd class="font-medium">${resultData.inputs.vuln}%</dd></div>
+                                <div class="flex justify-between"><dt class="text-gray-600">Primary Loss Range:</dt><dd class="font-medium">${formatRange(resultData.inputs.primaryLossLow, resultData.inputs.primaryLossHigh)}</dd></div>
+                                <div class="flex justify-between"><dt class="text-gray-600">Secondary Loss Range:</dt><dd class="font-medium">${formatRange(resultData.inputs.secondaryLossLow, resultData.inputs.secondaryLossHigh)}</dd></div>
+                                <div class="flex justify-between"><dt class="text-gray-600">Control Cost:</dt><dd class="font-medium">$${formatNumber(resultData.inputs.controlCost)}</dd></div>
+                                <div class="flex justify-between"><dt class="text-gray-600">Control Effectiveness:</dt><dd class="font-medium">${resultData.inputs.controlEffectiveness}%</dd></div>
+                            </dl>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-gray-700 mb-2">Calculations</h5>
+                            <div class="text-sm space-y-2">
+                                <div>
+                                    <div class="flex justify-between"><dt class="text-gray-600">Loss Magnitude Range:</dt><dd class="font-medium">${formatRange(resultData.lmLow, resultData.lmHigh)}</dd></div>
+                                    <p class="text-xs text-gray-500 text-right">(Primary Loss + Secondary Loss)</p>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between"><dt class="text-gray-600">Effective Vulnerability:</dt><dd class="font-medium">${formatNumber(resultData.effectiveVulnPercent, 2)}%</dd></div>
+                                    <p class="text-xs text-gray-500 text-right">(${resultData.inputs.vuln}% × (100% - ${resultData.inputs.controlEffectiveness}%))</p>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between"><dt class="text-gray-600">Loss Event Frequency:</dt><dd class="font-medium">${formatNumber(resultData.lef, 2)}</dd></div>
+                                    <p class="text-xs text-gray-500 text-right">(${resultData.inputs.tef} × ${formatNumber(resultData.effectiveVulnPercent, 2)}%)</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-200">
+                                <div class="flex justify-between items-baseline">
+                                    <dt class="text-indigo-600 font-bold">Annualized Risk Range (Residual):</dt>
+                                    <dd class="font-bold text-lg text-indigo-800 text-right">${formatRange(resultData.residualRiskLow, resultData.residualRiskHigh)}</dd>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    <p class="text-right">Low: ${formatNumber(resultData.lef, 2)} × $${formatNumber(resultData.lmLow)}</p>
+                                    <p class="text-right">High: ${formatNumber(resultData.lef, 2)} × $${formatNumber(resultData.lmHigh)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 `;
+                 individualResultsContainer.appendChild(resultCard);
+            };
+
+            const renderRosiCard = (resultData) => {
+                let conclusionText, conclusionColor;
+                if (resultData.inputs.controlCost > 0) {
+                    if (resultData.riskReductionLow > resultData.inputs.controlCost) {
+                        conclusionText = "This control is a financially viable investment.";
+                        conclusionColor = "text-green-700";
+                    } else {
+                         conclusionText = "This control is NOT a financially viable investment.";
+                         conclusionColor = "text-red-700";
+                    }
+                } else {
+                     if (resultData.riskReductionLow > 0) {
+                        conclusionText = "Control is viable as it reduces risk at no cost.";
+                        conclusionColor = "text-green-700";
+                    } else {
+                        conclusionText = "Control has no cost and provides no risk reduction.";
+                        conclusionColor = "text-gray-600";
+                    }
+                }
+
+                const resultCard = document.createElement('div');
+                resultCard.className = 'p-4 border border-gray-200 rounded-lg bg-gray-50';
+                resultCard.innerHTML = `
+                    <h4 class="font-bold text-gray-800 text-lg mb-3">ROSI Analysis for: ${resultData.scenarioName}</h4>
+                    <dl class="text-sm space-y-2">
+                         <div>
+                            <div class="flex justify-between"><dt class="text-gray-600">Annualized Loss Expectancy (ALE):</dt><dd class="font-medium">${formatRange(resultData.initialRiskLow, resultData.initialRiskHigh)}</dd></div>
+                            <p class="text-xs text-gray-500 text-right">(Expected loss without the control)</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between"><dt class="text-gray-600">Residual Risk:</dt><dd class="font-medium">${formatRange(resultData.residualRiskLow, resultData.residualRiskHigh)}</dd></div>
+                            <p class="text-xs text-gray-500 text-right">(Remaining loss with the control)</p>
+                        </div>
+                        <hr class="border-dashed">
+                        <div>
+                            <div class="flex justify-between"><dt class="text-green-700 font-semibold">Risk Reduction:</dt><dd class="font-medium text-green-700">${formatRange(resultData.riskReductionLow, resultData.riskReductionHigh)}</dd></div>
+                            <p class="text-xs text-gray-500 text-right">(ALE - Residual Risk)</p>
+                        </div>
+                         <div>
+                            <div class="flex justify-between"><dt class="text-red-700 font-semibold">Mitigating Control Cost:</dt><dd class="font-medium text-red-700">$${formatNumber(resultData.inputs.controlCost)}</dd></div>
+                            <p class="text-xs text-gray-500 text-right">(Annualized cost of control)</p>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <div class="flex justify-between items-baseline">
+                                <dt class="text-indigo-600 font-bold">Return on Security Investment (ROSI):</dt>
+                                <dd class="font-bold text-lg text-indigo-800 text-right">${formatRange(resultData.rosiLow, resultData.rosiHigh, '%')}</dd>
+                            </div>
+                             <p class="text-xs text-gray-500 text-right">((Risk Reduction - Control Cost) / Control Cost) × 100%</p>
+                        </div>
+                        <div class="p-2 mt-2 rounded-md text-center text-md font-semibold ${conclusionColor} bg-opacity-10 ${conclusionColor.replace('text', 'bg').replace('-700', '-100')}">
+                            ${conclusionText}
+                        </div>
+                    </dl>
+                `;
+                 individualRosiResultsContainer.appendChild(resultCard);
+            };
+            
+            // --- Calculation Triggers ---
+            const runCalculations = (mode) => {
+                individualResultsContainer.innerHTML = '';
+                individualRosiResultsContainer.innerHTML = '';
+                
+                const scenarios = document.querySelectorAll('.risk-scenario');
+                if (scenarios.length === 0) {
+                    resultsContainer.classList.add('hidden');
+                    rosiResultsContainer.classList.add('hidden');
+                    exportButtonsContainer.classList.add('hidden');
+                    return;
+                }
+
+                let allCalcs = [];
+                scenarios.forEach((scenario, index) => {
+                    allCalcs.push(getScenarioCalculations(scenario, index));
+                });
+                
+                // Process FAIR Risk results if needed
+                if (mode === 'risk' || mode === 'all') {
+                    let totalResidualRiskLow = 0, totalResidualRiskHigh = 0, totalControlCost = 0;
+                    
+                    allCalcs.forEach(calcs => {
+                        renderRiskCard(calcs);
+                        totalResidualRiskLow += calcs.residualRiskLow;
+                        totalResidualRiskHigh += calcs.residualRiskHigh;
+                        totalControlCost += calcs.inputs.controlCost;
+                    });
+
+                    const overallRiskLow = totalResidualRiskLow + totalControlCost;
+                    const overallRiskHigh = totalResidualRiskHigh + totalControlCost;
+
+                    overallResultContainer.innerHTML = `
+                        <h3 class="text-xl font-bold text-gray-900">Overall Risk Summary</h3>
+                        <div class="mt-4 space-y-3">
+                            <div class="flex justify-between items-center text-md"><span class="text-gray-600">Total Residual Risk Range:</span><span class="font-semibold text-gray-800">${formatRange(totalResidualRiskLow, totalResidualRiskHigh)}</span></div>
+                            <div class="flex justify-between items-center text-md"><span class="text-gray-600">Total Annual Control Cost:</span><span class="font-semibold text-gray-800">$${formatNumber(totalControlCost)}</span></div>
+                            <hr class="border-t-2 border-dashed border-gray-300 my-2">
+                            <div class="flex justify-between items-center pt-2"><span class="text-xl font-bold text-indigo-700">Total Annualized Risk Range:</span><span class="text-2xl font-extrabold text-indigo-700 text-right">${formatRange(overallRiskLow, overallRiskHigh)}</span></div>
+                        </div>
+                    `;
+                    lastCalculationResults.scenarios = allCalcs;
+                    lastCalculationResults.summary = { totalResidualRiskLow, totalResidualRiskHigh, totalControlCost, overallRiskLow, overallRiskHigh };
+                    resultsContainer.classList.remove('hidden');
+                } else {
+                     resultsContainer.classList.add('hidden');
+                     lastCalculationResults.scenarios = null;
+                     lastCalculationResults.summary = null;
+                }
+
+                // Process ROSI results if needed
+                if (mode === 'rosi' || mode === 'all') {
+                     allCalcs.forEach(calcs => renderRosiCard(calcs));
+                     lastCalculationResults.rosi = allCalcs;
+                     rosiResultsContainer.classList.remove('hidden');
+                } else {
+                    rosiResultsContainer.classList.add('hidden');
+                    lastCalculationResults.rosi = null;
+                }
+                
+                exportButtonsContainer.classList.remove('hidden');
+            };
+
+            const exportAsMarkdown = () => {
+                if (!lastCalculationResults) return;
+
+                let mdContent = "# FAIR Risk Analysis Report\n\n";
+
+                if (lastCalculationResults.scenarios && lastCalculationResults.scenarios.length > 0) {
+                     mdContent += `## FAIR Risk Analysis\n\n`;
+                     lastCalculationResults.scenarios.forEach(res => {
+                        mdContent += `### Scenario: ${res.scenarioName}\n\n`;
+                        mdContent += `**Inputs**\n| Parameter | Value |\n|---|---|\n`;
+                        mdContent += `| TEF | ${res.inputs.tef} |\n`;
+                        mdContent += `| Vulnerability | ${res.inputs.vuln}% |\n`;
+                        mdContent += `| Primary Loss Range | ${formatRange(res.inputs.primaryLossLow, res.inputs.primaryLossHigh)} |\n`;
+                        mdContent += `| Secondary Loss Range | ${formatRange(res.inputs.secondaryLossLow, res.inputs.secondaryLossHigh)} |\n`;
+                        mdContent += `| Control Cost | $${formatNumber(res.inputs.controlCost)} |\n`;
+                        mdContent += `| Control Effectiveness | ${res.inputs.controlEffectiveness}% |\n\n`;
+
+                        mdContent += `**Calculations**\n| Parameter | Value |\n|---|---|\n`;
+                        mdContent += `| Loss Magnitude (LM) Range | ${formatRange(res.lmLow, res.lmHigh)} |\n`;
+                        mdContent += `| Effective Vulnerability | ${formatNumber(res.effectiveVulnPercent, 2)}% |\n`;
+                        mdContent += `| Loss Event Frequency (LEF) | ${formatNumber(res.lef, 2)} |\n`;
+                        mdContent += `| **Annualized Risk (Residual) Range** | **${formatRange(res.residualRiskLow, res.residualRiskHigh)}** |\n\n`;
+                    });
+
+                    mdContent += `### Overall Risk Summary\n\n`;
+                    mdContent += `| Parameter | Value |\n|---|---|\n`;
+                    mdContent += `| Total Residual Risk Range | ${formatRange(lastCalculationResults.summary.totalResidualRiskLow, lastCalculationResults.summary.totalResidualRiskHigh)} |\n`;
+                    mdContent += `| Total Annual Control Cost | $${formatNumber(lastCalculationResults.summary.totalControlCost)} |\n`;
+                    mdContent += `| **Total Annualized Risk Range** | **${formatRange(lastCalculationResults.summary.overallRiskLow, lastCalculationResults.summary.overallRiskHigh)}** |\n`;
+                }
+
+                if (lastCalculationResults.rosi && lastCalculationResults.rosi.length > 0) {
+                    mdContent += `\n## Return on Security Investment (ROSI) Analysis\n\n`;
+                    lastCalculationResults.rosi.forEach(res => {
+                        mdContent += `### ROSI for: ${res.scenarioName}\n\n`;
+                        mdContent += `| Parameter | Value |\n|---|---|\n`;
+                        mdContent += `| Annualized Loss Expectancy (ALE) | ${formatRange(res.initialRiskLow, res.initialRiskHigh)} |\n`;
+                        mdContent += `| Residual Risk | ${formatRange(res.residualRiskLow, res.residualRiskHigh)} |\n`;
+                        mdContent += `| Risk Reduction | ${formatRange(res.riskReductionLow, res.riskReductionHigh)} |\n`;
+                        mdContent += `| Mitigating Control Cost | $${formatNumber(res.inputs.controlCost)} |\n`;
+                        mdContent += `| **ROSI Range** | **${formatRange(res.rosiLow, res.rosiHigh, '%')}** |\n\n`;
+                    });
+                }
+
+                const blob = new Blob([mdContent], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'FAIR_Analysis.md';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+
+            const exportToPDF = () => {
+                if (!lastCalculationResults) return;
+                
+                const doc = new jsPDF();
+                const pageHeight = doc.internal.pageSize.height;
+                const pageWidth = doc.internal.pageSize.width;
+                const margin = 15;
+                let y = 0;
+
+                const FONT_SIZES = { H1: 20, H2: 16, H3: 12, BODY: 10, SMALL: 8 };
+                const COLORS = { PRIMARY: "#111827", SECONDARY: "#4B5563", ACCENT: "#4F46E5", GREEN: "#059669", RED: "#DC2626" };
+
+                let mainTitle = "FAIR Quantitative Risk Analysis";
+                let headerTitle = "FAIR Risk Analysis Report";
+                const hasRisk = lastCalculationResults.scenarios && lastCalculationResults.scenarios.length > 0;
+                const hasRosi = lastCalculationResults.rosi && lastCalculationResults.rosi.length > 0;
+
+                if (hasRosi) {
+                    if (hasRisk) {
+                        mainTitle = "FAIR Risk & ROSI Analysis";
+                        headerTitle = "FAIR Risk & ROSI Analysis Report";
+                    } else {
+                        mainTitle = "Return on Security\nInvestment (ROSI) Analysis";
+                        headerTitle = "ROSI Analysis Report";
+                    }
+                }
+
+                const addHeaderFooter = () => {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    for (let i = 1; i <= pageCount; i++) {
+                        doc.setPage(i);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(FONT_SIZES.SMALL);
+                        doc.setTextColor(COLORS.SECONDARY);
+                        doc.text(headerTitle, margin, 10);
+                        doc.text(new Date().toLocaleDateString('en-US'), pageWidth - margin, 10, { align: "right" });
+                        doc.setDrawColor(COLORS.ACCENT);
+                        doc.line(margin, 12, pageWidth - margin, 12);
+
+                        doc.setFont("helvetica", "normal");
+                        doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+                        doc.text("FAIR Model Calculator v4.0.1, by Uri.", margin, pageHeight - 10);
+                    }
+                };
+                
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(30);
+                doc.setTextColor(COLORS.PRIMARY);
+                const titleParts = mainTitle.split(' & ');
+                doc.text(titleParts[0], pageWidth / 2, pageHeight / 2 - (titleParts.length > 1 ? 25 : 15), { align: "center" });
+                if (titleParts.length > 1) {
+                    doc.text(`& ${titleParts[1]}`, pageWidth / 2, pageHeight / 2 - 15, { align: "center" });
+                }
+                
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(FONT_SIZES.H3);
+                doc.setTextColor(COLORS.SECONDARY);
+                doc.text(`Report Generated: ${new Date().toLocaleString('en-US')}`, pageWidth / 2, pageHeight / 2 + 10, { align: "center" });
+                
+                doc.addPage();
+                y = 20;
+
+                const checkPageBreak = (neededHeight) => {
+                    if (y + neededHeight > pageHeight - 20) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                };
+                
+                if (hasRisk) {
+                     doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H1); doc.setTextColor(COLORS.PRIMARY);
+                     doc.text("FAIR Risk Analysis", margin, y); y += 10;
+                     lastCalculationResults.scenarios.forEach((res, index) => {
+                        checkPageBreak(80); 
+                        doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H2); doc.setTextColor(COLORS.ACCENT);
+                        doc.text(`Risk Scenario ${index + 1}: ${res.scenarioName}`, margin, y); y += 8;
+                        doc.setDrawColor(COLORS.SECONDARY); doc.setLineWidth(0.2);
+                        doc.line(margin, y, pageWidth - margin, y); y += 8;
+                        const col1 = margin, col2 = margin + ((pageWidth - (margin * 2)) / 2) + 5, initialY = y;
+                        doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H3); doc.setTextColor(COLORS.PRIMARY);
+                        doc.text("Inputs", col1, y); y += 6;
+                        doc.setFont("helvetica", "normal"); doc.setFontSize(FONT_SIZES.BODY); doc.setTextColor(COLORS.SECONDARY);
+                        doc.text(`Threat Event Frequency:`, col1, y); doc.text(`${res.inputs.tef}`, col2 - 10, y, { align: "right" }); y += 6;
+                        doc.text(`Vulnerability:`, col1, y); doc.text(`${res.inputs.vuln}%`, col2 - 10, y, { align: "right" }); y += 6;
+                        doc.text(`Primary Loss Range:`, col1, y); doc.text(`${formatRange(res.inputs.primaryLossLow, res.inputs.primaryLossHigh)}`, col2 - 10, y, { align: "right" }); y += 6;
+                        doc.text(`Secondary Loss Range:`, col1, y); doc.text(`${formatRange(res.inputs.secondaryLossLow, res.inputs.secondaryLossHigh)}`, col2 - 10, y, { align: "right" }); y += 6;
+                        doc.text(`Mitigating Control Cost:`, col1, y); doc.text(`$${formatNumber(res.inputs.controlCost)}`, col2 - 10, y, { align: "right" }); y += 6;
+                        doc.text(`Control Effectiveness:`, col1, y); doc.text(`${res.inputs.controlEffectiveness}%`, col2 - 10, y, { align: "right" }); y += 6;
+                        const leftColHeight = y;
+                        y = initialY; 
+                        doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H3); doc.setTextColor(COLORS.PRIMARY);
+                        doc.text("Calculations", col2, y); y += 6;
+                        doc.setFont("helvetica", "normal"); doc.setFontSize(FONT_SIZES.BODY); doc.setTextColor(COLORS.SECONDARY);
+                        doc.text(`Loss Magnitude Range:`, col2, y); y += 6; doc.text(`${formatRange(res.lmLow, res.lmHigh)}`, pageWidth - margin, y, { align: "right" }); y += 6;
+                        doc.text(`Effective Vulnerability:`, col2, y); doc.text(`${formatNumber(res.effectiveVulnPercent, 2)}%`, pageWidth - margin, y, { align: "right" }); y += 6;
+                        doc.text(`Loss Event Frequency (LEF):`, col2, y); doc.text(`${formatNumber(res.lef, 2)}`, pageWidth - margin, y, { align: "right" }); y += 10;
+                        doc.setDrawColor(COLORS.SECONDARY);
+                        y += 6;
+                        doc.line(col2, y - 3, pageWidth - margin, y - 3);
+                        y += 6;
+                        doc.setFont("helvetica", "bold"); doc.setTextColor(COLORS.ACCENT);
+                        doc.text(`Annualized Risk Range:`, col2, y); y += 7;
+                        doc.setFontSize(FONT_SIZES.H3);
+                        doc.text(`${formatRange(res.residualRiskLow, res.residualRiskHigh)}`, pageWidth - margin, y, { align: "right" }); y += 6;
+                        y = Math.max(y, leftColHeight) + 10;
+                    });
+                    checkPageBreak(50);
+                    y += 5;
+                    doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H2); doc.setTextColor(COLORS.PRIMARY);
+                    doc.text("Overall Risk Summary", margin, y); y += 8;
+                    doc.setFillColor(249, 250, 251); doc.setDrawColor(229, 231, 235);
+                    doc.roundedRect(margin, y, pageWidth - (margin * 2), 32, 3, 3, 'FD'); y += 10;
+                    doc.setFont("helvetica", "normal"); doc.setFontSize(FONT_SIZES.BODY); doc.setTextColor(COLORS.SECONDARY);
+                    doc.text(`Total Residual Risk Range:`, margin + 5, y); doc.text(`${formatRange(lastCalculationResults.summary.totalResidualRiskLow, lastCalculationResults.summary.totalResidualRiskHigh)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                    doc.text(`Total Annual Control Cost:`, margin + 5, y); doc.text(`$${formatNumber(lastCalculationResults.summary.totalControlCost)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                    doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H3); doc.setTextColor(COLORS.ACCENT);
+                    doc.text(`Total Annualized Risk Range:`, margin + 5, y); doc.text(`${formatRange(lastCalculationResults.summary.overallRiskLow, lastCalculationResults.summary.overallRiskHigh)}`, pageWidth - margin - 5, y, { align: "right" });
+                    y += 10;
+                }
+                
+                if (hasRosi) {
+                     if (hasRisk) { checkPageBreak(30); y+= 10; } // Add space if both are present
+                     doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H1); doc.setTextColor(COLORS.PRIMARY);
+                     doc.text("Return on Security Investment (ROSI) Analysis", margin, y); y += 10;
+                     lastCalculationResults.rosi.forEach(res => {
+                         checkPageBreak(60);
+                         doc.setFont("helvetica", "bold"); doc.setFontSize(FONT_SIZES.H3); doc.setTextColor(COLORS.ACCENT);
+                         doc.text(`ROSI for: ${res.scenarioName}`, margin, y); y += 8;
+                         doc.setFillColor(249, 250, 251); doc.setDrawColor(229, 231, 235);
+                         doc.roundedRect(margin, y, pageWidth - (margin * 2), 48, 3, 3, 'FD'); y += 8;
+                         doc.setFont("helvetica", "normal"); doc.setFontSize(FONT_SIZES.BODY); doc.setTextColor(COLORS.SECONDARY);
+                         doc.text(`Annualized Loss Expectancy (ALE):`, margin + 5, y); doc.text(`${formatRange(res.initialRiskLow, res.initialRiskHigh)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                         doc.text(`Residual Risk:`, margin + 5, y); doc.text(`${formatRange(res.residualRiskLow, res.residualRiskHigh)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                         doc.setFont("helvetica", "bold");
+                         doc.setTextColor(COLORS.GREEN); doc.text(`Risk Reduction:`, margin + 5, y); doc.text(`${formatRange(res.riskReductionLow, res.riskReductionHigh)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                         doc.setTextColor(COLORS.RED); doc.text(`Mitigating Control Cost:`, margin + 5, y); doc.text(`$${formatNumber(res.inputs.controlCost)}`, pageWidth - margin - 5, y, { align: "right" }); y += 8;
+                         doc.setFontSize(FONT_SIZES.H3); doc.setTextColor(COLORS.ACCENT);
+                         doc.text(`Return on Security Investment (ROSI):`, margin + 5, y); doc.text(`${formatRange(res.rosiLow, res.rosiHigh, '%')}`, pageWidth - margin - 5, y, { align: "right" });
+                         y += 15;
+                     });
+                }
+
+
+                addHeaderFooter();
+                doc.save("FAIR_Analysis_Report.pdf");
+            };
+
+
+            // --- Attach Event Listeners ---
+            addScenarioBtn.addEventListener('click', addScenario);
+            calculateBtn.addEventListener('click', () => runCalculations('risk'));
+            calculateRosiBtn.addEventListener('click', () => runCalculations('rosi'));
+            calculateAllBtn.addEventListener('click', () => runCalculations('all'));
+            exportMdBtn.addEventListener('click', exportAsMarkdown);
+            exportPdfBtn.addEventListener('click', exportToPDF);
+        });
+    </script>
+
+</body>
+</html>
+
