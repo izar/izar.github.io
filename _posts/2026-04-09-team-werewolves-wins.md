@@ -2,9 +2,10 @@
 layout: post
 title: Team Werewolves Wins!
 author: Izar Tarandach
+description: AI won't replace human threat modelers — garbage in, garbage out still applies, and adversarial thinking stays a deeply human skill.
 ---
 
-<figure><img alt="" src="/assets/img/werewolves.png" /></figure>
+<figure><img alt="Werewolf illustration representing threat modelers questioning a system's design" src="/assets/img/werewolves.png" /></figure>
 
 April 9, 2026
 

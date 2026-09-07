@@ -1,0 +1,33 @@
+# Threat Modeling: A Practical Guide for Development Teams
+
+> Companion site for the book by Izar Tarandach and Matthew J. Coles, and an
+> ongoing blog about threat modeling practice, tools, and its intersection
+> with AI/LLMs.
+
+This site is maintained by Izar Tarandach (co-author of "Threat Modeling: A
+Practical Guide for Development Teams", O'Reilly, ISBN 9781492056553) and
+covers practical, team-oriented threat modeling: methodology, tools, and
+current debates such as AI-assisted threat modeling and prompt injection.
+
+## Book
+
+- [Threat Modeling: A Practical Guide for Development Teams on Amazon](https://www.amazon.com/Threat-Modeling-Identification-Avoidance-Secure/dp/1492056553/)
+- [Threat Modeling: A Practical Guide for Development Teams on Barnes & Noble](https://www.barnesandnoble.com/w/threat-modeling-izar-tarandach/1137728005?ean=9781492056553)
+
+## Blog posts
+
+- [Team Werewolves Wins!](https://threatmodeling.dev/team-werewolves-wins/): AI won't replace human threat modelers — garbage in, garbage out still applies.
+- [A Dragon and Python walk into an OWASP card game...](https://threatmodeling.dev/a-dragon-and-python-walk-into-an-owasp-card-game/): Tour of Threat Dragon, pyTM, Cornucopia, and Cumulus.
+- [Would Asimov use ChatGPT? A Threat Modeler's Take on AI Ethics](https://threatmodeling.dev/would-asimov-use-chatgpt-a-threat-modelers-take-on-ai-ethics/): Asimov's Three Laws as a lens on AI ethics.
+- [CTM and LLMs - Hitting the Wall (In a Good Way)](https://threatmodeling.dev/ctm-and-llms-hitting-the-wall-in-a-good-way/): Using LLMs as a practice partner in Continuous Threat Modeling.
+- [Vibe Coding an the rise of PR-Fatigue](https://threatmodeling.dev/vibe-coding-an-the-rise-of-pr-fatigue/): AI-generated code and the alert-fatigue problem in code review.
+- [Prompt Injection (Good God) What Is It Good For?](https://threatmodeling.dev/prompt-injection-good-god-what-is-it-good-for/): A skeptical look at OWASP's prompt injection definition.
+- [Vibe Threat Modeling. No, really.](https://threatmodeling.dev/vibe-threat-modeling-no-really/): Why intuition alone doesn't replace rigor in threat modeling.
+- [Zen Of Threat Modeling](https://threatmodeling.dev/zen-of-threat-modeling/): Koan-style musings on threat modeling practice.
+- [Prompt Injection Should Not Be A Security Issue](https://threatmodeling.dev/prompt-injection-should-not-be-a-security-issue/): Why treating prompt injection as an LLM security bug misses the point.
+
+## External resources referenced
+
+- [Threat Modeling Manifesto](https://www.threatmodelingmanifesto.org/)
+- [OWASP pytm](https://github.com/OWASP/pytm)
+- [Continuous Threat Modeling](https://github.com/izar/continuous-threat-modeling)

@@ -2,9 +2,10 @@
 layout: post
 title: CTM and LLMs - Hitting the Wall (In a Good Way)
 author: Izar Tarandach
+description: Using LLMs inside Continuous Threat Modeling is like hitting tennis balls against a wall — not a replacement for the team, but a useful practice partner.
 ---
 
-<figure><img alt="" src="/assets/img/tennis.png" /></figure>
+<figure><img alt="Tennis ball bouncing off a wall, representing LLMs as a practice partner in threat modeling" src="/assets/img/tennis.png" /></figure>
 
 August 27th, 2025
 
