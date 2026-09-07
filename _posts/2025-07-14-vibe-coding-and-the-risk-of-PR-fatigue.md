@@ -2,9 +2,10 @@
 layout: post
 title: Vibe Coding an the rise of PR-Fatigue
 author: Izar Tarandach
+description: AI-generated code is piling up in pull requests faster than reviewers can scrutinize it, echoing the alert-fatigue problem security teams already know.
 ---
 
-<figure><img alt="" src="/assets/img/merge.png" /></figure>
+<figure><img alt="Illustration of pull requests piling up, representing PR review fatigue" src="/assets/img/merge.png" /></figure>
 
 July 14, 2025
 
